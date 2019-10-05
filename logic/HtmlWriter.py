@@ -9,18 +9,22 @@ class HtmlWriter():
         return filepath
 
     @staticmethod
-    def write_polygon(filename):
+    def write_polygon(filename, polygon):
         from bs4 import BeautifulSoup as Soup
         filepath = HtmlWriter.get_path(filename)
         file = open(filepath)
         soup = Soup(file, "html.parser")
-        new_poligon = soup.new_tag('polygon')
-        new_poligon['points'] = "20,50,600,250,310,90"
-        new_poligon['Style'] = "fill: #FADFCA"
+        new_polygon = soup.new_tag('polygon')
+        points = ''
+        print(polygon.points)
+        for pair in polygon.points:
+            points = points + str(pair[0]) + ',' + str(pair[1]) + ','
+        new_polygon['points'] = points
+        new_polygon['Style'] = "fill: " + polygon.color
         polygons = soup.find('svg')
-        polygons.append(new_poligon)
+        polygons.append(new_polygon)
         print(soup)
-        with open(filename, "wb") as file:
+        with open(filepath, "wb") as file:
             file.write(soup.prettify("utf-8"))
         file.close()
 
