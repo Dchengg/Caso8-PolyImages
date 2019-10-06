@@ -1,13 +1,21 @@
 from logic.HtmlWriter import HtmlWriter
-import logic.Genetic as genetic
+from logic.Population import Population
 
 
 def main():
-    population = genetic.initial_population(3)
-    for i in range(0, 3):
-        HtmlWriter.write_polygon("PolyImage.html", population[i])
-    HtmlWriter.visualize("PolyImage.html")
-
+    HtmlWriter.reset_html('PolyImage.html')
+    population = Population(0.1, 10, 100)
+    population.initial_population()
+    print(str(len(population.population)))
+    population.view_population()
+    #'''
+    population.apply_fitness()
+    population.natural_selection()
+    population.mutation()
+    HtmlWriter.reset_html('PolyImage.html')
+    print(str(len(population.population)))
+    population.view_population()
+    #'''
 
 if __name__ == "__main__":
     main()
