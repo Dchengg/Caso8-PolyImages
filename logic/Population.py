@@ -1,3 +1,7 @@
+
+
+
+
 import random
 
 from logic.HtmlWriter import HtmlWriter
@@ -19,6 +23,8 @@ class Population:
         self.pop_zero = pop_zero
         self.pop_max = pop_max
         self.population = []
+        self.finished = False
+        self.num_gen = 0
 
     def initial_population(self):
         for i in range(0, self.pop_zero):
@@ -29,20 +35,30 @@ class Population:
             HtmlWriter.write_polygon('PolyImage.html', individual)
         HtmlWriter.visualize('PolyImage.html')
 
-
     def apply_fitness(self):
+        print("Generation : " + str(self.num_gen))
+        self.num_gen += 1
+        self.check_finished()
         for individual in self.population:
             individual.fitness(237,135,45)
+
+
+    def check_finished(self):
+        for individual in self.population:
+            if(individual.fitness_score < 90):
+                return False
+        return True
 
     def natural_selection(self):
         mating_pool = []
         self.population = sorted(self.population, key=lambda x: x.fitness_score, reverse=True)
         for i in range (0,5):
             mating_pool.append(self.population[i])
-        del self.population[6 : len(self.population)]
-        for i in range(0,10):
+        del self.population[5  : len(self.population)]
+        for i in range(0,15):
             r = random.randint(0,len(mating_pool)-1)
             father = mating_pool[r]
+            r = random.randint(0, len(mating_pool) - 1)
             mother = mating_pool[r]
             baby = Polygon()
             baby.add_point(father.points[0][0], father.points[0][1])

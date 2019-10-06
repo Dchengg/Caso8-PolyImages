@@ -4,18 +4,18 @@ from logic.Population import Population
 
 def main():
     HtmlWriter.reset_html('PolyImage.html')
-    population = Population(0.1, 10, 100)
+    population = Population(0.2, 20, 100)
     population.initial_population()
-    print(str(len(population.population)))
+
+    while not population.finished:
+
+        print(str(len(population.population)))
+        population.apply_fitness()
+        population.natural_selection()
+        population.mutation()
+
+
     population.view_population()
-    #'''
-    population.apply_fitness()
-    population.natural_selection()
-    population.mutation()
-    HtmlWriter.reset_html('PolyImage.html')
-    print(str(len(population.population)))
-    population.view_population()
-    #'''
 
 if __name__ == "__main__":
     main()
