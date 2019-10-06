@@ -48,4 +48,4 @@ class HtmlWriter():
         import webbrowser
         filepath = HtmlWriter.get_path(filename)
         chrome_path = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
-        webbrowser.get(chrome_path).open(filepath)
+        webbrowser.open(filepath)

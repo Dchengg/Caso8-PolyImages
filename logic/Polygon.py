@@ -26,6 +26,9 @@ class Polygon:
 
     def mutate(self, mutation_percentage):
         if random.uniform(0.0, 1.0) < mutation_percentage:
+            self.points[0] += (random.randint(1,20) , random.randint(1,20))
+            self.points[1] += (random.randint(1, 20), random.randint(1, 20))
+            self.points[2] += (random.randint(1, 20), random.randint(1, 20))
             red = self.color[0] + random.randint(1, 20)
             green = self.color[1] + random.randint(1, 20)
             blue = self.color[2] + random.randint(1, 20)

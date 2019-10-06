@@ -1,7 +1,3 @@
-
-
-
-
 import random
 
 from logic.HtmlWriter import HtmlWriter
@@ -13,21 +9,21 @@ def create_polygon():
     polygon.add_point(random.randint(0, 800), random.randint(0, 800))
     polygon.add_point(random.randint(0, 800), random.randint(0, 800))
     polygon.add_point(random.randint(0, 800), random.randint(0, 800))
-    polygon.set_color((random.randint(0,256),random.randint(0,256),random.randint(0,256)))
+    polygon.set_color((random.randint(0, 256), random.randint(0, 256), random.randint(0, 256)))
     return polygon
 
 
 class Population:
-    def __init__(self, mutation_rate, pop_zero, pop_max):
+    def __init__(self, mutation_rate, pop_size, pop_max):
         self.mutation_rate = mutation_rate
-        self.pop_zero = pop_zero
+        self.pop_size = pop_size
         self.pop_max = pop_max
         self.population = []
         self.finished = False
         self.num_gen = 0
 
     def initial_population(self):
-        for i in range(0, self.pop_zero):
+        for i in range(0, self.pop_size):
             self.population.append(create_polygon())
 
     def view_population(self):
@@ -38,25 +34,26 @@ class Population:
     def apply_fitness(self):
         print("Generation : " + str(self.num_gen))
         self.num_gen += 1
-        self.check_finished()
         for individual in self.population:
-            individual.fitness(237,135,45)
-
+            individual.fitness(237, 135, 45)
+        self.finished = self.check_finished()
 
     def check_finished(self):
         for individual in self.population:
-            if(individual.fitness_score < 90):
+            if individual.fitness_score < 90:
                 return False
         return True
 
     def natural_selection(self):
         mating_pool = []
         self.population = sorted(self.population, key=lambda x: x.fitness_score, reverse=True)
-        for i in range (0,5):
+        for i in range(0, 5):
             mating_pool.append(self.population[i])
-        del self.population[5  : len(self.population)]
-        for i in range(0,15):
-            r = random.randint(0,len(mating_pool)-1)
+        del self.population[5: len(self.population)]
+        if self.pop_size < self.pop_max:
+            self.pop_size += 5
+        for i in range(0, self.pop_size):
+            r = random.randint(0, len(mating_pool) - 1)
             father = mating_pool[r]
             r = random.randint(0, len(mating_pool) - 1)
             mother = mating_pool[r]
@@ -73,4 +70,3 @@ class Population:
     def mutation(self):
         for individual in self.population:
             individual.mutate(self.mutation_rate)
-
