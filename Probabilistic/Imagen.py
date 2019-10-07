@@ -1,19 +1,17 @@
 from PIL import Image
 import random
 from Grid import Grid
+import time
 
 
 class Imagen:
     def __init__(self, filename):
         try:
             self.image = Image.open(filename)
-            print(self.image.mode)
-            # self.image = self.image.convert('RGB')
+            self.colors = []
             self.width, self.height = self.image.size
-
-            self.coordinates = []
-            self.edges = []
-
+            self.grids = []
+            self.percentage = 0
             self.iterate_image()
 
         except FileNotFoundError:
@@ -27,7 +25,7 @@ class Imagen:
         height_subsquare = self.width // 8
 
         count_x = 1
-        percentage = int(round(((width_subsquare * height_subsquare) / 100) * 40))
+        self.percentage = int(round(((width_subsquare * height_subsquare) / 100) * 40))
 
         for x_tiles in range(8):
             count_y = 1
@@ -41,50 +39,144 @@ class Imagen:
                 y2 = y_squares * count_y
                 box = (x1, y1, x2, y2)
 
-                self.is_background(percentage, box)
+                self.background(box)
 
                 count_y += 1
             count_x += 1
 
-    def is_background(self, percentage, box):
-        total_r = 0
-        total_g = 0
-        total_b = 0
+        self.set_colors()
+
+    def background(self, box):
+        total_alpha = 0
 
         x1 = box[0]
         y1 = box[1]
         x2 = box[2]
         y2 = box[3]
 
-        for number in range(percentage):
-            pixel1 = random.randint(x1, x2 - 1)
-            pixel2 = random.randint(y1, y2 - 1)
-            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
-            if alpha != 0:
-                total_r += red
-                total_g += green
-                total_b += blue
+        red, green, blue, alpha = self.image.getpixel((x1, y1))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x2-1, y2-1))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x1, y2-1))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x2-1, y1))
+        total_alpha += alpha
 
-        avg_red = int(round(total_r / percentage))
-        avg_green = int(round(total_g / percentage))
-        avg_blue = int(round(total_b / percentage))
+        red, green, blue, alpha = self.image.getpixel((x1, y1))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x2//2, y2//2))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x1, y2//2))
+        total_alpha += alpha
+        red, green, blue, alpha = self.image.getpixel((x2//2, y1))
+        total_alpha += alpha
 
-        if avg_red != 0 and avg_green != 0 and avg_blue != 0:
-            color = (avg_red, avg_green, avg_blue)
-            grid = Grid(color, box)
-            self.coordinates.append(grid)
-            # region = self.image.crop(grid.get_coordinate())
+        avg_alpha = int(round(total_alpha / 8))
+
+        if avg_alpha != 0:
+            self.grids.append(box)
+
+    def get_grids(self):
+        return self.grids
+
+    def set_colors(self):
+        for i in self.grids:
+            grid = Grid(i)
+            x1 = i[0]
+            y1 = i[1]
+            x2 = i[2]
+            y2 = i[3]
+
+            # region = self.image.crop(i)
             # region.show()
 
-    def get_coordinates(self):
-        return self.coordinates
+            for number in range(self.percentage):
+                pixel1 = random.randint(x1, x2 - 1)
+                pixel2 = random.randint(y1, y2 - 1)
+                red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+
+                if red > 60 and green > 60 and blue > 60:
+                    color = red, green, blue
+                    grid.add_color(color)
 
 
+start_time = time.time()
 im = Imagen("cyndaquill.png")
+print("--- %s seconds ---" % (time.time() - start_time))
 
-coordinates = im.get_coordinates()
-for i in coordinates:
-    print("Average of", i.get_coordinate(), "is", i.get_color())
-    # region = im.crop(i.get_coordinate())
-    # region.show()
+"""
+    def set_colors(self):
+        for i in self.grids:
+            print(i)
+            total_r = 0
+            total_g = 0
+            total_b = 0
 
+            x1 = i[0]
+            y1 = i[1]
+            x2 = i[2]
+            y2 = i[3]
+
+            for number in range(self.percentage):
+                pixel1 = random.randint(x1, x2 - 1)
+                pixel2 = random.randint(y1, y2 - 1)
+                red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+
+                if alpha != 0:
+                    total_r += red
+                    total_g += green
+                    total_b += blue
+
+            avg_red = int(round(total_r / self.percentage))
+            avg_green = int(round(total_g / self.percentage))
+            avg_blue = int(round(total_b / self.percentage))
+
+            if avg_red != 0 and avg_green != 0 and avg_blue != 0:
+                color = (avg_red, avg_green, avg_blue)
+                grid = Grid(color, i)
+                # self.grids.append(grid)
+"""
+
+"""
+total_alpha = 0
+
+        x1 = box[0]
+        y1 = box[1]
+        x2 = box[2]
+        y2 = box[3]
+
+        for i in range(y1, y2 - 1):
+            pixel1 = x1
+            pixel2 = i
+            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+            # print(pixel1, pixel2)
+            total_alpha += alpha
+
+        for i in range(y1, y2 - 1):
+            pixel1 = x2 - 1
+            pixel2 = i
+            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+            # print(pixel1, pixel2)
+            total_alpha += alpha
+
+        for i in range(x1, x2 - 1):
+            pixel1 = i
+            pixel2 = y1
+            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+            # print(pixel1, pixel2)
+            total_alpha += alpha
+
+        for i in range(x1, x2 - 1):
+            pixel1 = i
+            pixel2 = y2 - 1
+            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+            # print(pixel1, pixel2)
+            total_alpha += alpha
+
+        avg_alpha = int(round(total_alpha / self.percentage))
+        # print("Avg alpha:", avg_alpha)
+
+        if avg_alpha != 0:
+            self.grids.append(box)
+"""
