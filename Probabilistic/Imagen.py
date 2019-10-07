@@ -10,6 +10,7 @@ class Imagen:
             self.image = Image.open(filename)
             self.colors = []
             self.width, self.height = self.image.size
+            self.boxes = []
             self.grids = []
             self.percentage = 0
             self.iterate_image()
@@ -75,14 +76,19 @@ class Imagen:
         avg_alpha = int(round(total_alpha / 8))
 
         if avg_alpha != 0:
-            self.grids.append(box)
+            self.boxes.append(box)
+
+    def get_boxes(self):
+        return self.boxes
+
 
     def get_grids(self):
         return self.grids
 
     def set_colors(self):
-        for i in self.grids:
+        for i in self.boxes:
             grid = Grid(i)
+            self.grids.append(grid)
             x1 = i[0]
             y1 = i[1]
             x2 = i[2]
@@ -101,8 +107,15 @@ class Imagen:
                     grid.add_color(color)
 
 
+
+
 start_time = time.time()
 im = Imagen("cyndaquill.png")
+cont = 0
+for i in im.get_grids():
+    print("Colores del " + str(cont) + " cuadrante :_ " )
+    print(i.map)
+    cont += 1
 print("--- %s seconds ---" % (time.time() - start_time))
 
 """
