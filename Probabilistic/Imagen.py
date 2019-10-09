@@ -1,7 +1,9 @@
 from PIL import Image
 import random
-from Grid import Grid
+
 import time
+
+from Probabilistic.Grid import Grid
 
 
 class Imagen:
@@ -104,14 +106,3 @@ class Imagen:
                     if (red > 60 and green > 60 and blue > 60) and (red < 240 and green < 240 and blue < 240):
                         color = red, green, blue
                         i.add_color(color)
-
-
-start_time = time.time()
-im = Imagen("earth.png")
-cont = 0
-for i in im.get_grids():
-    print(i.get_coordinate())
-    print("Probability:", i.probs)
-    print(i.get_color())
-    print("")
-print("--- %s seconds ---" % (time.time() - start_time))
