@@ -6,7 +6,6 @@ from colormath.color_diff import delta_e_cie2000
 
 
 class Grid:
-
     def __init__(self, coordinates):
         self.coordinates = coordinates
         self.colors = []
@@ -14,26 +13,28 @@ class Grid:
         self.probs = 100
         self.count = 0
 
+    # Utiliza varias fucniones matemáticas para determinar qué tan parecidos son dos RGBA
     def convert_to_lab(self, colors):
         rgb = sRGBColor(rgb_r=colors[0], rgb_g=colors[1], rgb_b=colors[2], is_upscaled=True)
         xyz = convert_color(rgb, XYZColor)
         lab = convert_color(xyz, LabColor)
         return lab
 
+    # Verifica si el color que entra como parámetro es similar a alguno que ya se haya analizado en el cuadrante
     def add_color(self, new_color):
-        not_similar = False
-        if len(self.map) == 0:
-            self.count += 1
-            self.map[new_color] = 1
+        not_similar = False             # Bool que se mantiene falso a ser que el pixel sea diferente de todos los demás
+        if len(self.map) == 0:          # Primera iteración, para cuando la lista esté vacía
+            self.count += 1             # Contador que sirve para llevar el totoal de pixel analizados
+            self.map[new_color] = 1     # Información del pixel se guarda en un diccionario
         else:
-            for k in self.map:
-                color1 = self.convert_to_lab(k)
-                color2 = self.convert_to_lab(new_color)
-                delta_e = delta_e_cie2000(color1, color2)
-                if delta_e < 20:
+            for current_color in self.map:
+                color1 = self.convert_to_lab(current_color)     # Pasa de RGBA a lab
+                color2 = self.convert_to_lab(new_color)         # Para de RGBA a lab
+                delta_e = delta_e_cie2000(color1, color2)       # Se usa para determinar la diferencia
+                if delta_e < 20:                                # En caso que los colores sean vagamente parecidos
                     not_similar = False
                     self.count += 1
-                    self.map[k] += 1
+                    self.map[current_color] += 1
                     break
                 else:
                     not_similar = True
