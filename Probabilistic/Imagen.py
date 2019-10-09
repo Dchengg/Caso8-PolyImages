@@ -19,6 +19,8 @@ class Imagen:
             print("Invalid value")
 
     def iterate_image(self):
+        # Tiles es la cantidad de cuadrantes por cada eje. La cantidad de cuadrantes en la imagen es este al cuadrado
+        # Conforma más grande sea tiles, más pequeños van a ser los cuadrantes
         tiles = 32
         x_squares = self.width // tiles
         y_squares = self.height // tiles
@@ -26,92 +28,100 @@ class Imagen:
         width_subsquare = self.width // tiles
         height_subsquare = self.width // tiles
 
-        count_x = 1
-        self.percentage = int(round(((width_subsquare * height_subsquare) / 100) * 5))
-        self.percentage_color = int(round(((width_subsquare * height_subsquare) / 100) * 20))
+        self.percentage = int(round(((width_subsquare * height_subsquare) / 100) * 5))          # Porcentaje que se usa para sacar probabilidad del fondo
+        self.percentage_color = int(round(((width_subsquare * height_subsquare) / 100) * 20))   # Porcentaje que se usa para sacar probabilidad de colores
 
-        for x_tiles in range(tiles):
-            count_y = 1
-            x2 = x_squares * count_x
-            for y_tiles in range(tiles):
-                x1 = x_tiles * width_subsquare
-                y1 = y_tiles * height_subsquare
-                y2 = y_squares * count_y
-                box = (x1, y1, x2, y2)
-                grid = Grid(box)
+        count_x = 1     # Se inicia el contador en 1 porque sino el primer cuadrante no haría nada
 
-                self.grids.append(grid)
+        for x_tiles in range(tiles):                # Itera por cada cuadrante de tiles de alto
+            count_y = 1 # Igual que count_x
 
-                count_y += 1
-            count_x += 1
-        self.function()
+            x2 = x_squares * count_x                # x de la esquina inferior izquierda
+            for y_tiles in range(tiles):            # Itera por cada cuadrante de tiles de ancho
+                x1 = x_tiles * width_subsquare      # x de la esquina superior derecha
+                y1 = y_tiles * height_subsquare     # y de la esquina superior derecha
+                y2 = y_squares * count_y            # y de la esquina inferior izquierda
+                box = (x1, y1, x2, y2)              # Se hace una tupla de cuatro números para crear un cuadrante lógico
+                grid = Grid(box)                    # Crea un nuevo objeto tipo Grid
+                self.grids.append(grid)             # Agrega a una lista que tiene todos los cuadrantes lógicos
+                count_y += 1                        # Le incrementa al contador de y para mover las esquinas del eje
+            count_x += 1                            # Le incrementa el contador para mover esquinas del eje
+        self.remove_background()                    # Método probabilísitco que se encarga de remover el fondo
 
-    def function(self):
-        for i in range(0, 20):
-            for grid in self.grids:
-                probability = random.randint(1, 100)
-                if probability <= grid.get_probability():
-                    if not self.analyze_grid(grid):
-                        grid.reduce_probability()
-        self.set_colors()
+    def remove_background(self):
+        for attempts in range(0, 20):                       # Se hace 20 veces para asegurar que remueva todos los cuadrantes que no tengan imagen
+            for grid in self.grids:                         # Itera sobre cada cuadrante lógico de la imagen
+                probability = random.randint(1, 100)        # Random que indica si se analiza el cuadrante
+                if probability <= grid.get_probability():   # Si random es igual que probabilidad restante del cuadrante
+                    if not self.analyze_grid(grid):         # Si lo que se analiza no tiene color, reduce la probabilidad del cuadrante
+                        grid.reduce_probability()           # Llama método que reduce score del cuadrante
+        self.set_colors()                                   # Guarda "top" de colores del cuadrante
 
     def analyze_grid(self, Grid):
         grid = Grid.get_coordinate()
-
+        # Agarra las posiciones respectivas de la tupla de coordenadas
         x1 = grid[0]
         y1 = grid[1]
         x2 = grid[2]
         y2 = grid[3]
 
+        # Crea una variable que tome en cuenta el total RGB de cada color
         total_red = 0
         total_green = 0
         total_blue = 0
 
+        # For crea un pixel dentro del cuadrante lógico de forma aleatoria
         for number in range(self.percentage):
-            pixel1 = random.randint(x1, x2 - 1)
-            pixel2 = random.randint(y1, y2 - 1)
-            red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+            pixelx = random.randint(x1, x2 - 1)
+            pixely = random.randint(y1, y2 - 1)
+            red, green, blue, alpha = self.image.getpixel((pixelx, pixely))
 
             total_red += red
             total_green += green
             total_blue += blue
 
         if total_red != 0 and total_green != 0 and total_blue != 0:
-            return True
+            return True     # Retorna True si al menos un RGB da un color
         else:
-            return False
-
-    def get_grids(self):
-        for i in self.grids:
-            if i.get_total() > 20:
-                self.image_colors.append(i)
-        return self.image_colors
+            return False    # Retorna False si todos los RGB son negros o no tienen fondo
 
     def set_colors(self):
         for i in self.grids:
-            if i.get_probability() > 0:
+            if i.get_probability() > 20:            # Si un cuadrante tiene 20% de probabilidad o menos de NO contener imagen, se ignora
                 grid = i.get_coordinate()
 
+                # Agarra las posiciones respectivas de la tupla de coordenadas
                 x1 = grid[0]
                 y1 = grid[1]
                 x2 = grid[2]
                 y2 = grid[3]
 
                 for number in range(self.percentage_color):
-                    pixel1 = random.randint(x1, x2 - 1)
-                    pixel2 = random.randint(y1, y2 - 1)
-                    red, green, blue, alpha = self.image.getpixel((pixel1, pixel2))
+                    pixelx = random.randint(x1, x2 - 1)
+                    pixely = random.randint(y1, y2 - 1)
+                    red, green, blue, alpha = self.image.getpixel((pixelx, pixely))
+
+                    # If se asegura que no agarre colores o muy negros o muy blancos
                     if (red > 60 and green > 60 and blue > 60) and (red < 240 and green < 240 and blue < 240):
                         color = red, green, blue
                         i.add_color(color)
 
+    def get_grids(self):
+        for grid in self.grids:                     # Itera sobre cada grid lógico de la imagen
+            if grid.get_total() > 0:                # Agarra cuadrantes que tengan al menos un color
+                self.image_colors.append(grid)         # Mete en una lista que tiene únicamente cuadrantes con color
+        return self.image_colors                    # Retorna lista con cuadrantes que contienen colores
+
 
 start_time = time.time()
-im = Imagen("earth.png")
+im = Imagen("cyndaquill.png")
 cont = 0
+
 for i in im.get_grids():
     print(i.get_coordinate())
     print("Probability:", i.probs)
-    print(i.get_color())
+    i.get_color()
+    # region = im.image.crop(i.get_coordinate())
+    # region.show()
     print("")
 print("--- %s seconds ---" % (time.time() - start_time))
