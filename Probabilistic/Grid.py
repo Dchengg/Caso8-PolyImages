@@ -11,7 +11,7 @@ class Grid:
         self.colors = []
         self.map = dict()
         self.probs = 100
-        self.count = 0
+        self.total = 0
 
     # Utiliza varias fucniones matemáticas para determinar qué tan parecidos son dos RGBA
     def convert_to_lab(self, colors):
@@ -24,7 +24,7 @@ class Grid:
     def add_color(self, new_color):
         not_similar = False             # Bool que se mantiene falso a ser que el pixel sea diferente de todos los demás
         if len(self.map) == 0:          # Primera iteración, para cuando la lista esté vacía
-            self.count += 1             # Contador que sirve para llevar el totoal de pixel analizados
+            self.total += 1             # Contador que sirve para llevar el totoal de pixel analizados
             self.map[new_color] = 1     # Información del pixel se guarda en un diccionario
         else:
             for current_color in self.map:
@@ -33,13 +33,13 @@ class Grid:
                 delta_e = delta_e_cie2000(color1, color2)       # Se usa para determinar la diferencia
                 if delta_e < 20:                                # En caso que los colores sean vagamente parecidos
                     not_similar = False
-                    self.count += 1
+                    self.total += 1
                     self.map[current_color] += 1
                     break
                 else:
                     not_similar = True
             if not_similar:
-                self.count += 1
+                self.total += 1
                 self.map[new_color] = 1
 
     def reduce_probability(self):
@@ -49,14 +49,14 @@ class Grid:
         return self.map
 
     def get_color(self):
-        print("Total:", self.count)
+        print("Total:", self.total)
         for i in self.map:
-            percentage = int(round((self.map[i] / self.count) * 100))
+            percentage = int(round((self.map[i] / self.total) * 100))
             print("Percentage of", i, ":", percentage)
         return self.map
 
     def get_total(self):
-        return self.count
+        return self.total
 
     def get_coordinate(self):
         return self.coordinates

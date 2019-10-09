@@ -5,9 +5,13 @@ from Probabilistic.Imagen import Imagen
 
 
 def main():
-    #start_time = time.time()
-    im = Imagen("earth.png")
+    im = Imagen("cyndaquill.png")
     population = Population(im.get_grids())
+    first_grid = population.individuals[0]
+    print(first_grid.get_color())
+    for i in range(30):
+        polygon = population.genetic_distribution(first_grid)
+        print("Poligono : ", polygon.color, "  ADN : " , polygon.adn)
     ''' cont = 0
     for i in im.get_grids():
         print(i.get_coordinate())
