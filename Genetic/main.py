@@ -7,11 +7,10 @@ from Probabilistic.Imagen import Imagen
 def main():
     im = Imagen("cyndaquill.png")
     population = Population(im.get_grids())
-    first_grid = population.individuals[0]
-    print(first_grid.get_color())
-    for i in range(30):
-        polygon = population.genetic_distribution(first_grid)
-        print("Poligono : ", polygon.color, "  ADN : " , polygon.adn)
+    polygons = population.individuals[0].polygons
+    for p in polygons:
+        print("Poligono : ", p.color, "  ADN : ", p.adn, "  Fitness_score : ", p.fitness_score)
+
     ''' cont = 0
     for i in im.get_grids():
         print(i.get_coordinate())
