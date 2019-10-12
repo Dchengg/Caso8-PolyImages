@@ -13,13 +13,14 @@ def Point_in_polygon(point, polygon):
             vt = (point.y - vertexes[i].y) / (vertexes[i + 1].y - vertexes[i].y)
             if point.x < vertexes[i].x + vt * (vertexes[i + 1].x - vertexes[i].x):
                 count += 1
-    return count
+    return count % 2
 
 
 class Individual:
     def __init__(self, grid):
         self.grid = grid
         self.distribution = grid.get_map()
+        self.sample = grid.sample
         self.polygons = []
         for number in range(3):
             self.genetic_distribution()
@@ -46,9 +47,17 @@ class Individual:
                 count += 1
         return count / len(self.polygons)
 
+    def test_points_on_polygon(self, polygon):
+        counter = 0
+        pixels = self.sample[polygon.color]
+        for pixel in pixels:
+            counter += Point_in_polygon(pixel, polygon)
+        return counter
+
     def fitness(self, polygon):
+        inside = self.test_points_on_polygon(polygon)
         color_percentage = self.get_color_polygons(polygon.color)
-        score = abs(1 - (color_percentage / self.distribution[polygon.color]))
+        score = abs((1*inside) - (color_percentage / self.distribution[polygon.color]))
         polygon.fitness_score = score
 
 ''' polygon = Polygon(101001011) tester de point_in_polygon
