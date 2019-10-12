@@ -31,12 +31,12 @@ class Individual:
         polygon = Polygon(bin(adn))
         accumulator = 0
         for color, number in self.distribution.items():
-            percentage = int(round((number / self.grid.total) * 100))
-            if adn < (65536 * (percentage / 100)) + accumulator:
+            percentage = number / self.grid.total
+            if adn < (65536 * percentage) + accumulator:
                 polygon.color = color
                 break
             else:
-                accumulator += 65536 * (percentage / 100)
+                accumulator += 65536 * percentage
         self.polygons.append(polygon)
 
     def get_color_polygons(self, color_target):

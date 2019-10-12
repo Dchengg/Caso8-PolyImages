@@ -4,12 +4,15 @@ from colormath.color_objects import XYZColor, sRGBColor, LabColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
 
+from Genetic.Point import Point
+
 
 class Grid:
     def __init__(self, coordinates):
         self.coordinates = coordinates
         self.colors = []
         self.map = dict()
+        self.sample = dict()
         self.probs = 100
         self.total = 0
 
@@ -21,11 +24,13 @@ class Grid:
         return lab
 
     # Verifica si el color que entra como parámetro es similar a alguno que ya se haya analizado en el cuadrante
-    def add_color(self, new_color):
+    def add_color(self, new_color, x , y):
         not_similar = False             # Bool que se mantiene falso a ser que el pixel sea diferente de todos los demás
         if len(self.map) == 0:          # Primera iteración, para cuando la lista esté vacía
             self.total += 1             # Contador que sirve para llevar el totoal de pixel analizados
             self.map[new_color] = 1     # Información del pixel se guarda en un diccionario
+            self.sample[new_color] = []
+            self.sample[new_color].append(Point(x, y))
         else:
             for current_color in self.map:
                 color1 = self.convert_to_lab(current_color)     # Pasa de RGBA a lab
@@ -35,12 +40,16 @@ class Grid:
                     not_similar = False
                     self.total += 1
                     self.map[current_color] += 1
+                    if len(self.sample[current_color]) <= 10:
+                        self.sample[current_color].append(Point(x, y))
                     break
                 else:
                     not_similar = True
             if not_similar:
                 self.total += 1
                 self.map[new_color] = 1
+                self.sample[new_color] = []
+                self.sample[new_color].append(Point(x, y))
 
     def reduce_probability(self):
         self.probs -= 20

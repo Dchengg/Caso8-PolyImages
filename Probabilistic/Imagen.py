@@ -23,7 +23,7 @@ class Imagen:
     def iterate_image(self):
         # Tiles es la cantidad de cuadrantes por cada eje. La cantidad de cuadrantes en la imagen es este al cuadrado
         # Conforma más grande sea tiles, más pequeños van a ser los cuadrantes
-        tiles = 32
+        tiles = 16
         x_squares = self.width // tiles
         y_squares = self.height // tiles
 
@@ -106,7 +106,7 @@ class Imagen:
                     # If se asegura que no agarre colores o muy negros o muy blancos
                     if (red > 60 and green > 60 and blue > 60) and (red < 240 and green < 240 and blue < 240):
                         color = red, green, blue
-                        i.add_color(color)
+                        i.add_color(color, pixelx, pixely)
 
     def get_grids(self):
         for grid in self.grids:                     # Itera sobre cada grid lógico de la imagen
