@@ -1,6 +1,19 @@
 import random
 
+from Genetic.Point import Point
 from Genetic.Polygon import Polygon
+
+
+def Point_in_polygon(point, polygon):
+    count = 0
+    vertexes = polygon.points
+    for i in range(len(vertexes) - 1):
+        if ((vertexes[i].y <= point.y) and (vertexes[i + 1].y > point.y)) or (
+                (vertexes[i].y > point.y) and (vertexes[i + 1].y <= point.y)):
+            vt = (point.y - vertexes[i].y) / (vertexes[i + 1].y - vertexes[i].y)
+            if point.x < vertexes[i].x + vt * (vertexes[i + 1].x - vertexes[i].x):
+                count += 1
+    return count
 
 
 class Individual:
@@ -26,7 +39,6 @@ class Individual:
                 accumulator += 65536 * (percentage / 100)
         self.polygons.append(polygon)
 
-
     def get_color_polygons(self, color_target):
         count = 0
         for polygon in self.polygons:
@@ -38,3 +50,11 @@ class Individual:
         color_percentage = self.get_color_polygons(polygon.color)
         score = abs(1 - (color_percentage / self.distribution[polygon.color]))
         polygon.fitness_score = score
+
+''' polygon = Polygon(101001011) tester de point_in_polygon
+polygon.add_point(5, 5)
+polygon.add_point(50, 50)
+polygon.add_point(100, 30)
+point = Point(10, 4)
+times = Point_in_polygon(point,polygon)
+print(times)'''

@@ -1,3 +1,6 @@
+from Genetic.Point import Point
+
+
 class Polygon:
     def __init__(self, adn):
         self.points = []
@@ -6,8 +9,8 @@ class Polygon:
         self.fitness_score = 0
 
     def add_point(self, x, y):
-        pair = (x, y)
-        self.points.append(pair)
+        point =  Point(x, y)
+        self.points.append(point)
 
     def set_color(self, color):
         self.color = color
