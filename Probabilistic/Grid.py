@@ -1,5 +1,4 @@
 
-import math
 from colormath.color_objects import XYZColor, sRGBColor, LabColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
@@ -24,7 +23,7 @@ class Grid:
         return lab
 
     # Verifica si el color que entra como parámetro es similar a alguno que ya se haya analizado en el cuadrante
-    def add_color(self, new_color, x , y):
+    def add_color(self, new_color, x, y):
         not_similar = False             # Bool que se mantiene falso a ser que el pixel sea diferente de todos los demás
         if len(self.map) == 0:          # Primera iteración, para cuando la lista esté vacía
             self.total += 1             # Contador que sirve para llevar el totoal de pixel analizados

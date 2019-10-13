@@ -1,14 +1,15 @@
-import time
-
 from Genetic.Population import Population
 from Probabilistic.Imagen import Imagen
+import time
 
 
 def main():
+    start_time = time.time()
     im = Imagen("cyndaquill.png")
     population = Population(im.get_grids())
     population.genetics()
     population.view_population()
+    print("--- %s seconds ---" % (time.time() - start_time))
     '''population.tester()
     polygons = population.individuals[0].polygons
     for p in polygons:
@@ -24,5 +25,4 @@ def main():
     '''
 
 
-if __name__ == "__main__":
-    main()
+main()

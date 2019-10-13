@@ -23,7 +23,7 @@ class Imagen:
     def iterate_image(self):
         # Tiles es la cantidad de cuadrantes por cada eje. La cantidad de cuadrantes en la imagen es este al cuadrado
         # Conforma más grande sea tiles, más pequeños van a ser los cuadrantes
-        tiles = 32
+        tiles = 64
         x_squares = self.width // tiles
         y_squares = self.height // tiles
 
@@ -33,10 +33,10 @@ class Imagen:
         self.percentage = int(round(((width_subsquare * height_subsquare) / 100) * 5))          # Porcentaje que se usa para sacar probabilidad del fondo
         self.percentage_color = int(round(((width_subsquare * height_subsquare) / 100) * 20))   # Porcentaje que se usa para sacar probabilidad de colores
 
-        count_x = 1     # Se inicia el contador en 1 porque sino el primer cuadrante no haría nada
+        count_x = 1         # Se inicia el contador en 1 porque sino el primer cuadrante no haría nada
 
         for x_tiles in range(tiles):                # Itera por cada cuadrante de tiles de alto
-            count_y = 1 # Igual que count_x
+            count_y = 1     # Igual que count_x
 
             x2 = x_squares * count_x                # x de la esquina inferior izquierda
             for y_tiles in range(tiles):            # Itera por cada cuadrante de tiles de ancho
@@ -61,16 +61,12 @@ class Imagen:
 
     def analyze_grid(self, Grid):
         grid = Grid.get_coordinate()
+
         # Agarra las posiciones respectivas de la tupla de coordenadas
         x1 = grid[0]
         y1 = grid[1]
         x2 = grid[2]
         y2 = grid[3]
-
-        # Crea una variable que tome en cuenta el total RGB de cada color
-        total_red = 0
-        total_green = 0
-        total_blue = 0
 
         # For crea un pixel dentro del cuadrante lógico de forma aleatoria
         for number in range(self.percentage):
@@ -78,18 +74,14 @@ class Imagen:
             pixely = random.randint(y1, y2 - 1)
             red, green, blue, alpha = self.image.getpixel((pixelx, pixely))
 
-            total_red += red
-            total_green += green
-            total_blue += blue
+            if red != 0 and green != 0 and blue != 0:
+                return True     # Retorna True si al menos un RGB da un color
 
-        if total_red != 0 and total_green != 0 and total_blue != 0:
-            return True     # Retorna True si al menos un RGB da un color
-        else:
-            return False    # Retorna False si todos los RGB son negros o no tienen fondo
+        return False    # Retorna False si todos los RGB son negros o no tienen fondo
 
     def set_colors(self):
         for i in self.grids:
-            if i.get_probability() > 20:            # Si un cuadrante tiene 20% de probabilidad o menos de NO contener imagen, se ignora
+            if i.get_probability() > 20:    # Si un cuadrante tiene 20% de probabilidad o menos de NO contener imagen, se ignora
                 grid = i.get_coordinate()
 
                 # Agarra las posiciones respectivas de la tupla de coordenadas
@@ -103,8 +95,8 @@ class Imagen:
                     pixely = random.randint(y1, y2 - 1)
                     red, green, blue, alpha = self.image.getpixel((pixelx, pixely))
 
-                    # If se asegura que no agarre colores o muy negros o muy blancos
-                    if (red > 60 and green > 60 and blue > 60) and (red < 240 and green < 240 and blue < 240):
+                    # If se asegura que no agarre pixeles que sean transparentes
+                    if alpha != 0:
                         color = red, green, blue
                         i.add_color(color, pixelx, pixely)
 
