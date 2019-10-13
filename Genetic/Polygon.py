@@ -9,7 +9,7 @@ class Polygon:
         self.fitness_score = 0
 
     def add_point(self, x, y):
-        point =  Point(x, y)
+        point = Point(x, y)
         self.points.append(point)
 
     def set_color(self, color):
