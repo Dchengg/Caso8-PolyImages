@@ -16,8 +16,8 @@ class HtmlWriter():
         soup = Soup(file, "html.parser")
         new_polygon = soup.new_tag('polygon')
         points = ''
-        for pair in polygon.points:
-            points = points + str(pair[0]) + ',' + str(pair[1]) + ','
+        for point in polygon.points:
+            points = points + str(point.x) + ',' + str(point.y) + ','
         new_polygon['points'] = points
         new_polygon['Style'] = "fill: " + '#%02x%02x%02x' % (polygon.color[0], polygon.color[1], polygon.color[2])
         polygons = soup.find('svg')

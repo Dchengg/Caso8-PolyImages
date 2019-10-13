@@ -23,7 +23,7 @@ class Imagen:
     def iterate_image(self):
         # Tiles es la cantidad de cuadrantes por cada eje. La cantidad de cuadrantes en la imagen es este al cuadrado
         # Conforma más grande sea tiles, más pequeños van a ser los cuadrantes
-        tiles = 16
+        tiles = 32
         x_squares = self.width // tiles
         y_squares = self.height // tiles
 

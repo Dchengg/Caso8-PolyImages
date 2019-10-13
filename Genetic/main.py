@@ -8,9 +8,11 @@ def main():
     im = Imagen("cyndaquill.png")
     population = Population(im.get_grids())
     population.genetics()
+    population.view_population()
+    '''population.tester()
     polygons = population.individuals[0].polygons
     for p in polygons:
-        print("Poligono : ", p.color, "  ADN : ", p.adn, "  Fitness_score : ", p.fitness_score)
+        print("Poligono : ", p.color, "  ADN : ", p.adn, "  Fitness_score : ", p.fitness_score)'''
 
     ''' cont = 0
     for i in im.get_grids():

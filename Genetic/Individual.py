@@ -19,12 +19,10 @@ def Point_in_polygon(point, polygon):
 
 def crossover(bin1, bin2):
     div = random.randint(0, 15)
-    num1 = BitArray(bin1)
-    num2 = BitArray(bin2)
-    num1 = num1[:div]
-    num2 = num2[div:]
+    num1 = bin1[:div]
+    num2 = bin2[div:]
     new_num = num1 + num2
-    return new_num.bin
+    return new_num
 
 
 class Individual:
@@ -34,6 +32,7 @@ class Individual:
         self.sample = grid.sample
         self.polygons = []
         self.pop_size = 0
+        self.pop_max = 20
         self.generation = 0
         self.finished = False
         for number in range(4):
@@ -88,15 +87,16 @@ class Individual:
         for number in range(start):
             mating_pool.append(self.polygons[number])
         del self.polygons[start:len(self.polygons)]
-        self.pop_size += 2
+        self.finished = self.check_if_finished()
+        if self.finished:
+            return
+        if self.pop_size < self.pop_max:
+            self.pop_size += 2
         for i in range(self.pop_size - len(self.polygons)):
             r = random.randint(0, len(mating_pool) - 1)
             father = mating_pool[r]
             r = random.randint(0, len(mating_pool) - 1)
             mother = mating_pool[r]
-            print("------------------")
-            print(father.adn)
-            print(mother.adn)
             baby = Polygon(crossover(father.adn, mother.adn))
             self.classify(int(baby.adn, 2), baby)
             self.generate_vertixes(baby)
@@ -104,11 +104,10 @@ class Individual:
             self.polygons.append(baby)
 
         self.generation += 1
-        self.finished = self.check_if_finished()
 
     def check_if_finished(self):
         for polygon in self.polygons:
-            if polygon.fitness_score < 1:
+            if polygon.fitness_score < 0.8:
                 return False
         return True
 
