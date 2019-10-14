@@ -35,7 +35,7 @@ class Grid:
                 color1 = self.convert_to_lab(current_color)     # Pasa de RGBA a lab
                 color2 = self.convert_to_lab(new_color)         # Para de RGBA a lab
                 delta_e = delta_e_cie2000(color1, color2)       # Se usa para determinar la diferencia
-                if delta_e < 20:                                # En caso que los colores sean vagamente parecidos
+                if delta_e < 30:                                # En caso que los colores sean vagamente parecidos
                     not_similar = False
                     self.total += 1
                     self.map[current_color] += 1
