@@ -37,7 +37,6 @@ class Individual:
         self.polygons = []
         self.pop_size = 0
         self.pop_max = 20
-        self.generation = 0
         self.finished = False
         for number in range(6):
             self.genetic_distribution()
@@ -108,8 +107,6 @@ class Individual:
             #self.crossover_vertixes(father, mother, baby)
             self.fitness(baby)
             self.polygons.append(baby)
-
-        self.generation += 1
 
     def check_if_finished(self):
         for polygon in self.polygons:
