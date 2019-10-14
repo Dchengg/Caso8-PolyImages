@@ -23,6 +23,10 @@ def crossover(bin1, bin2):
     num2 = bin2[div:]
     new_num = num1 + num2
     return new_num
+def mutation(bin):
+    prob = random.randint(0, 1000)
+    if prob >= 30:
+        return ~bin
 
 
 class Individual:
@@ -35,7 +39,7 @@ class Individual:
         self.pop_max = 20
         self.generation = 0
         self.finished = False
-        for number in range(4):
+        for number in range(6):
             self.genetic_distribution()
             self.pop_size += 1
         for polygon in self.polygons:
@@ -54,6 +58,7 @@ class Individual:
             x = random.randint(coordinates[0], coordinates[2])
             y = random.randint(coordinates[1], coordinates[3])
             polygon.add_point(x, y)
+
 
     def classify(self, adn, polygon):
         accumulator = 0
@@ -83,7 +88,7 @@ class Individual:
         mating_pool = []
         self.polygons.sort(key=lambda x: x.fitness_score, reverse=True)
         # int(round(len(self.polygons) * 0.40)
-        start = int(round(len(self.polygons) * 0.40))
+        start = int(round(len(self.polygons) * 0.70))
         for number in range(start):
             mating_pool.append(self.polygons[number])
         del self.polygons[start:len(self.polygons)]
@@ -100,6 +105,7 @@ class Individual:
             baby = Polygon(crossover(father.adn, mother.adn))
             self.classify(int(baby.adn, 2), baby)
             self.generate_vertixes(baby)
+            #self.crossover_vertixes(father, mother, baby)
             self.fitness(baby)
             self.polygons.append(baby)
 
@@ -107,7 +113,7 @@ class Individual:
 
     def check_if_finished(self):
         for polygon in self.polygons:
-            if polygon.fitness_score < 0.8:
+            if polygon.fitness_score < 1:
                 return False
         return True
 

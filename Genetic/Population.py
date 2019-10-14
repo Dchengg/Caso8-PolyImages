@@ -2,6 +2,7 @@ import random
 
 from Genetic.HtmlWriter import HtmlWriter
 from Genetic.Individual import Individual
+from xml.sax import saxutils as su
 from Genetic.Polygon import Polygon
 
 
@@ -39,7 +40,16 @@ class Population:
 
     def view_population(self):
         HtmlWriter.reset_html('PolyImage.html')
+        polygons = ''
         for individual in self.individuals:
             for polygon in individual.polygons:
-                HtmlWriter.write_polygon('PolyImage.html', polygon)
+                points = ''
+                for point in polygon.points:
+                    points = points + str(point.x) + ',' + str(point.y) + ','
+                color = '#%02x%02x%02x' % (polygon.color[0], polygon.color[1], polygon.color[2])
+                new_polygon = '\n' + '<polygon points= ' + '"' + points + '" ' + 'style=' + '"fill: ' + color + '"' + '>' + '\n' + '</polygon> '
+                polygons = polygons + new_polygon
+        print(polygons)
+        # polygons = su.unescape(polygons)
+        HtmlWriter.write_polygon('PolyImage.html', polygons)
         HtmlWriter.visualize('PolyImage.html')

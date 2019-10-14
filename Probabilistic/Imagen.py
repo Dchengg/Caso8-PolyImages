@@ -23,7 +23,7 @@ class Imagen:
     def iterate_image(self):
         # Tiles es la cantidad de cuadrantes por cada eje. La cantidad de cuadrantes en la imagen es este al cuadrado
         # Conforma más grande sea tiles, más pequeños van a ser los cuadrantes
-        tiles = 64
+        tiles = 32
         x_squares = self.width // tiles
         y_squares = self.height // tiles
 
@@ -96,7 +96,7 @@ class Imagen:
                     red, green, blue, alpha = self.image.getpixel((pixelx, pixely))
 
                     # If se asegura que no agarre pixeles que sean transparentes
-                    if alpha != 0:
+                    if alpha != 0 or (red < 250 and green < 250 and blue < 250):
                         color = red, green, blue
                         i.add_color(color, pixelx, pixely)
 
