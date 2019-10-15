@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Diego\Documents\GitHub\Caso8-PolyImages\venv"
+VIRTUAL_ENV="C:\Users\Mau\Documents\TEC\2019\Semestre II\Análisis de algoritmos\Caso 8\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
