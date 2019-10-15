@@ -1,0 +1,22 @@
+    html{height:100%;}
+    body {
+    background:#0D343A;
+    background:-webkit-gradient(linear,0% 0%,0% 100%, from(rgba(13,52,58,1) ), to(#000000)  );
+    background: -moz-linear-gradient(top, rgba(13,52,58,1) 0%, rgba(0,0,0,1) 100%);
+    overflow:hidden;
+    }
+    @keyframes polyImage-animation {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    svg.polyImage > g polygon {
+
+      animation: polyImage-animation 400ms linear 1 forwards;
+      transition-delay: 0.2s;
+      transform: scale(0);
+      transform-origin: center center;
+      opacity: 0;
+    }

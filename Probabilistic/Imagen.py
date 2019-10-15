@@ -1,3 +1,5 @@
+from builtins import FileNotFoundError
+
 from PIL import Image
 import random
 
@@ -14,13 +16,11 @@ class Imagen:
             self.percentage = 0
             self.percentage_color = 0
             self.r, self.g, self.b, self.a = red, green, blue, alpha = self.image.getpixel((0, 0))
-            print(red, green, blue, alpha)
             if alpha == 0:
                 self.background = False
             else:
                 self.background = True
             self.iterate_image()
-
         except FileNotFoundError:
             print("Invalid value")
 
