@@ -5,45 +5,25 @@ import time
 
 
 def main():
-    HtmlWriter.reset_html('PolyImage.html')
+    HtmlWriter.reset_html('PolyImage.html')  # Resets html for the new images
     start_time = time.time()
-    im = Imagen("cyndaquill2.png")
-    print("--- %s seconds ---" % (time.time() - start_time))
-    population = Population(im.get_grids(), 0)
-    population.genetics()
-    print(population.generation)
-    population.view_population()
-    print("--- %s seconds ---" % (time.time() - start_time))
-    im2 = Imagen("bicho.png")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    im = Imagen("cyndaquill.png")  # Sets the first image and gets data with probabilistic algorithm
+    population = Population(im.get_grids(), 0)  # Sets the population of grids for the image
+    population.genetics()  # starts the genetic algorithm for the image
+    print("Total de generaciones de la primera imagen : ", population.generation)
+    population.write_population()  # Writes in the HTML the polygons of each grid
+    im2 = Imagen("earth.png")  # Repeats the process with the second image
     population2 = Population(im2.get_grids(), 1)
     population2.genetics()
-    print(population2.generation)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    population2.view_population()
-    print("--- %s seconds ---" % (time.time() - start_time))
-    im3 = Imagen("earth2.png")
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("Total de generaciones de la segunda imagen : ", population2.generation)
+    population2.write_population()
+    im3 = Imagen("mudkip.png")  # Repeats the process with the second image
     population3 = Population(im3.get_grids(), 2)
     population3.genetics()
-    print(population3.generation)
-    population3.view_population()
-    HtmlWriter.visualize('PolyImage.html')
-    print("--- %s seconds ---" % (time.time() - start_time))
-
-    '''population.tester()
-    polygons = population.individuals[0].polygons
-    for p in polygons:
-        print("Poligono : ", p.color, "  ADN : ", p.adn, "  Fitness_score : ", p.fitness_score)'''
-
-    ''' cont = 0
-    for i in im.get_grids():
-        print(i.get_coordinate())
-        print("Probability:", i.probs)
-        print(i.get_color())
-        print("")
-    print("--- %s seconds ---" % (time.time() - start_time))
-    '''
+    print("Total de generaciones de la tercera imagen : ", population3.generation)
+    population3.write_population()
+    HtmlWriter.visualize('PolyImage.html')  # Sends the HTML to the browser to be view
+    print("Tiempo de ejecución del programa : ", "%s seconds" % (time.time() - start_time)) # Returns the execution time of the program
 
 
 main()

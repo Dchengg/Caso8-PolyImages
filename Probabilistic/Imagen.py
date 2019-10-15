@@ -37,10 +37,10 @@ class Imagen:
         self.percentage = int(round(((width_subsquare * height_subsquare) / 100) * 5))          # Porcentaje que se usa para sacar probabilidad del fondo
         self.percentage_color = int(round(((width_subsquare * height_subsquare) / 100) * 10))   # Porcentaje que se usa para sacar probabilidad de colores
 
-        count_x = 1         # Se inicia el contador en 1 porque sino el primer cuadrante no haría nada
+        count_x = 1  # Se inicia el contador en 1 porque sino el primer cuadrante no haría nada
 
-        for x_tiles in range(tiles):                # Itera por cada cuadrante de tiles de alto
-            count_y = 1     # Igual que count_x
+        for x_tiles in range(tiles):  # Itera por cada cuadrante de tiles de alto
+            count_y = 1  # Igual que count_x
 
             x2 = x_squares * count_x                # x de la esquina inferior izquierda
             for y_tiles in range(tiles):            # Itera por cada cuadrante de tiles de ancho
@@ -94,7 +94,7 @@ class Imagen:
             if red != 0 or green != 0 or blue != 0:
                 return True     # Retorna True si al menos un RGB da un color
 
-        return False    # Retorna False si todos los RGB son negros o no tienen fondo
+        return False  # Retorna False si todos los RGB son negros o no tienen fondo
 
     def analyze_white_grid(self, Grid):
         grid = Grid.get_coordinate()
@@ -118,7 +118,7 @@ class Imagen:
 
     def set_colors(self):
         for i in self.grids:
-            if i.get_probability() > 20:    # Si un cuadrante tiene 20% de probabilidad o menos de NO contener imagen, se ignora
+            if i.get_probability() > 20:  # Si un cuadrante tiene 20% de probabilidad o menos de NO contener imagen, se ignora
                 grid = i.get_coordinate()
 
                 # Agarra las posiciones respectivas de la tupla de coordenadas
@@ -138,7 +138,7 @@ class Imagen:
                         i.add_color(color, pixelx, pixely)
 
     def get_grids(self):
-        for grid in self.grids:                     # Itera sobre cada grid lógico de la imagen
-            if grid.get_total() > 0:                # Agarra cuadrantes que tengan al menos un color
-                self.image_colors.append(grid)         # Mete en una lista que tiene únicamente cuadrantes con color
-        return self.image_colors                    # Retorna lista con cuadrantes que contienen colores
+        for grid in self.grids:  # Itera sobre cada grid lógico de la imagen
+            if grid.get_total() > 0:  # Agarra cuadrantes que tengan al menos un color
+                self.image_colors.append(grid)  # Mete en una lista que tiene únicamente cuadrantes con color
+        return self.image_colors  # Retorna lista con cuadrantes que contienen colores
